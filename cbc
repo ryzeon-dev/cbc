@@ -1,0 +1,36 @@
+#!/usr/bin/python3
+
+import sys
+import time
+import os
+
+def charByChar(text, wait):
+	for char in text:
+	    sys.stdout.write(char)
+
+	    sys.stdout.flush()
+	    time.sleep(wait)
+
+if __name__ == '__main__':
+    args = sys.argv
+
+    if '-h' in args or '--help' in args:
+        print('''Print stdin char by char
+some_command | cbc [options]
+
+options:
+    -t, --time          Tells cbc the time duration of printing, default is 3 seconds
+    -h, --help          Show this message and exit''')
+        sys.exit(0)
+    
+    if sys.stdin.isatty():  
+        print('No input provided')
+        sys.exit(0)
+
+    text = sys.stdin.read()
+    
+    wait = 3.5 / len(text)
+    if '-t' in args or '--time' in args:
+        wait = float(args[2]) / len(text)
+        
+    charByChar(text, wait)
