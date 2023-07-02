@@ -2,7 +2,6 @@
 
 import sys
 import time
-import os
 
 def charByChar(text, wait):
 	for char in text:
