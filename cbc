@@ -28,7 +28,7 @@ options:
 
     text = sys.stdin.read()
     
-    wait = 3.5 / len(text)
+    wait = 3 / len(text)
     if '-t' in args or '--time' in args:
         wait = float(args[2]) / len(text)
         
