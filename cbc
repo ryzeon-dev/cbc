@@ -4,32 +4,74 @@ import sys
 import time
 
 def charByChar(text, wait):
-	for char in text:
-	    sys.stdout.write(char)
+    for char in text:
+        sys.stdout.write(char)
 
-	    sys.stdout.flush()
-	    time.sleep(wait)
+        sys.stdout.flush()
+        time.sleep(wait)
 
 if __name__ == '__main__':
-    args = sys.argv
+    args = sys.argv[1:]
 
     if '-h' in args or '--help' in args:
         print('''Print stdin char by char
-some_command | cbc [options]
+usage: 
+    - by pipe -> some_command | cbc [OPTIONS]
+    - by args -> cbc [OPTIONS] [TEXT]
 
 options:
-    -t, --time          Tells cbc the time duration of printing, default is 3 seconds
+    -t, --time          Sets the time duration of printing, default is 3 seconds
+    -i, --interval      Sets the time interval between each character
     -h, --help          Show this message and exit''')
         sys.exit(0)
     
-    if sys.stdin.isatty():  
-        print('No input provided')
-        sys.exit(0)
+    waitTime = 3 
+    interval = 0
 
-    text = sys.stdin.read()
+    if '-t' in args or '--time' in args:
+        try:
+            index = args.index('-t')
+        except:
+            index = args.index('--time')
+
+        try:    
+            waitTime = float(args[index+1])
+        except:
+            print('Time format error')
+            sys.exit(1)
+
+        args.pop(index+1)
+        args.pop(index)
     
-    wait = 3 / len(text)
+    elif '-i' in args or '--interval' in args:
+        try:
+            index = args.index('-i')
+        except:
+            index = args.index('--interval')
+
+        try:    
+            interval = float(args[index+1])
+        except:
+            print('Time format error')
+            sys.exit(1)
+
+        args.pop(index+1)
+        args.pop(index)
+
+    if sys.stdin.isatty():
+        if args:
+            text = ' '.join(args)
+
+        else:
+            print('No input provided')
+            sys.exit(0)
+    
+    else:
+        text = sys.stdin.read()
+    
+    wait = interval if interval else waitTime / len(text)
     if '-t' in args or '--time' in args:
         wait = float(args[2]) / len(text)
         
     charByChar(text, wait)
+    print('')
